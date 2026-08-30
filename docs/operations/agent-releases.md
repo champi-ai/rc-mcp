@@ -60,7 +60,7 @@ check has anything to react to). When they differ, the agent:
 
 1. Downloads `<AGENT_UPDATE_BASE_URL>/agent-v<version>/rc-mcp-agent-linux-<arch>`
    and its `.sha256` (default `AGENT_UPDATE_BASE_URL`:
-   `https://github.com/CloudKeter/rc-mcp/releases/download`, i.e. the
+   `https://github.com/champi-ai/rc-mcp/releases/download`, i.e. the
    pattern above).
 2. Verifies the downloaded binary's SHA-256 against the published
    checksum. A mismatch aborts the update entirely -- the agent keeps

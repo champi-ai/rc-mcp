@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/mcp/types"
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/mcp/types"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 func intPtr(i int) *int       { return &i }

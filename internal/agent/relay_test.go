@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
-	"github.com/CloudKeter/rc-mcp/internal/redisclient"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/redisclient"
 )
 
 // TestReplicaBridge_CrossReplicaDispatch_EndToEnd is the acceptance test

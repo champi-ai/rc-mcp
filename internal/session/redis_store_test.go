@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/redisclient"
+	"github.com/champi-ai/rc-mcp/internal/redisclient"
 )
 
 func TestRedisStore_CreateMirrorsToRedis(t *testing.T) {

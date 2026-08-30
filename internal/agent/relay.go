@@ -19,8 +19,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
-	"github.com/CloudKeter/rc-mcp/internal/redisclient"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/redisclient"
 )
 
 // DefaultLocationTTL bounds how long a device-location record survives

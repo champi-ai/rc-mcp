@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/mcp/types"
+	"github.com/champi-ai/rc-mcp/internal/mcp/types"
 )
 
 func TestShellSessionManager_StartWriteClose_RoundTrip(t *testing.T) {

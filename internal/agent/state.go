@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 // DefaultReconnectGracePeriod is the AGENT_RECONNECT_GRACE_PERIOD default

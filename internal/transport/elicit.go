@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/session"
 )
 
 // DefaultElicitationTimeout is used when RequestElicitation is called with

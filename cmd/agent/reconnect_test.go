@@ -11,8 +11,8 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"github.com/CloudKeter/rc-mcp/agent/client"
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/agent/client"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 // reconnectServer accepts a sequence of connections from one agent, each

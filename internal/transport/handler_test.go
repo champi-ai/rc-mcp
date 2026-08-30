@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/session"
 )
 
 func newTestHandler() (*Handler, session.SessionStore) {

@@ -1,4 +1,4 @@
-module github.com/CloudKeter/rc-mcp
+module github.com/champi-ai/rc-mcp
 
 go 1.23
 

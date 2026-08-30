@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 // ErrPairingExpired is returned by Pair when the server closes the

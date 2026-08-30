@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/redisclient"
+	"github.com/champi-ai/rc-mcp/internal/redisclient"
 )
 
 func newRedisTestRegistry(t *testing.T, ttl time.Duration) (*RedisRegistry, *redisclient.Fake) {

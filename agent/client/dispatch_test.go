@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/agent/executor"
-	"github.com/CloudKeter/rc-mcp/internal/mcp/types"
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/agent/executor"
+	"github.com/champi-ai/rc-mcp/internal/mcp/types"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 func dispatchEnvelope(correlationID string, input map[string]any) protocol.Envelope {

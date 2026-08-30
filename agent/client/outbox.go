@@ -4,7 +4,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 const (

@@ -12,8 +12,8 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"github.com/CloudKeter/rc-mcp/agent/client"
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/agent/client"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 func TestLoadConfig_RequiresServerURL(t *testing.T) {
@@ -234,7 +234,7 @@ func TestLoadConfig_AutoUpdateDefaults(t *testing.T) {
 	if cfg.autoUpdate {
 		t.Error("autoUpdate should default to false")
 	}
-	if cfg.updateBaseURL != "https://github.com/CloudKeter/rc-mcp/releases/download" {
+	if cfg.updateBaseURL != "https://github.com/champi-ai/rc-mcp/releases/download" {
 		t.Errorf("updateBaseURL = %q", cfg.updateBaseURL)
 	}
 	if cfg.systemdUnit != "rc-mcp-agent" {

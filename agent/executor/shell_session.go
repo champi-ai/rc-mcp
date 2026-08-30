@@ -18,7 +18,7 @@ import (
 
 	"github.com/creack/pty"
 
-	"github.com/CloudKeter/rc-mcp/internal/mcp/types"
+	"github.com/champi-ai/rc-mcp/internal/mcp/types"
 )
 
 const (

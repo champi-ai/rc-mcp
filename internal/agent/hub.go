@@ -12,7 +12,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"github.com/CloudKeter/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/devices"
 )
 
 // approvalResult is delivered to a pending connection when the operator

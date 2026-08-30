@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/CloudKeter/rc-mcp/internal/audit"
-	"github.com/CloudKeter/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/audit"
+	"github.com/champi-ai/rc-mcp/internal/devices"
 )
 
 // fakeNotifier records NotifyApproved/NotifyRejected calls without needing

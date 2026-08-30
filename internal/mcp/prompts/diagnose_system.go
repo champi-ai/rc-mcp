@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/CloudKeter/rc-mcp/internal/devices"
-	"github.com/CloudKeter/rc-mcp/internal/session"
-	"github.com/CloudKeter/rc-mcp/internal/transport"
+	"github.com/champi-ai/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/transport"
 )
 
 // diagnoseSystem builds the Section 5.1 template around a live sysinfo

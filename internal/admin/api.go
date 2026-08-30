@@ -13,8 +13,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/CloudKeter/rc-mcp/internal/audit"
-	"github.com/CloudKeter/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/audit"
+	"github.com/champi-ai/rc-mcp/internal/devices"
 )
 
 // Notifier is the subset of *agent.Hub the admin API needs: pushing an

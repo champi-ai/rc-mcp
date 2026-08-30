@@ -8,7 +8,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/CloudKeter/rc-mcp/internal/redisclient"
+	"github.com/champi-ai/rc-mcp/internal/redisclient"
 )
 
 const (

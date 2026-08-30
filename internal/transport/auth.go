@@ -7,7 +7,7 @@ package transport
 import (
 	"net/http"
 
-	"github.com/CloudKeter/rc-mcp/internal/auth"
+	"github.com/champi-ai/rc-mcp/internal/auth"
 )
 
 // AuthMiddleware validates the Authorization: Bearer <token> header on
