@@ -9,8 +9,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
-	"github.com/CloudKeter/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/session"
 )
 
 // DefaultEmitBackpressure is how long Bridge.Dispatch waits for a full

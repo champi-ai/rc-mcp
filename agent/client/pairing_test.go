@@ -12,7 +12,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 // newPairingServer runs a minimal server that replies to pair_request with

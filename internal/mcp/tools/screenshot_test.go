@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/agent"
-	"github.com/CloudKeter/rc-mcp/internal/jobs"
-	"github.com/CloudKeter/rc-mcp/internal/mcp/types"
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
-	"github.com/CloudKeter/rc-mcp/internal/session"
-	"github.com/CloudKeter/rc-mcp/internal/transport"
+	"github.com/champi-ai/rc-mcp/internal/agent"
+	"github.com/champi-ai/rc-mcp/internal/jobs"
+	"github.com/champi-ai/rc-mcp/internal/mcp/types"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/transport"
 )
 
 func newScreenshotDeps(dispatch *fakeDispatcher, store jobs.JobStore) ScreenshotDeps {

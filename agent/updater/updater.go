@@ -53,7 +53,7 @@ func ShouldUpdate(currentVersion, latestVersion string) bool {
 // Config configures one Update run.
 type Config struct {
 	// BaseURL is the release download base, e.g.
-	// "https://github.com/CloudKeter/rc-mcp/releases/download" (see
+	// "https://github.com/champi-ai/rc-mcp/releases/download" (see
 	// docs/operations/agent-releases.md for the full URL pattern).
 	BaseURL string
 	// GOOS/GOARCH select which published binary to fetch. Defaults to the

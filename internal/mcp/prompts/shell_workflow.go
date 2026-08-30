@@ -3,8 +3,8 @@ package prompts
 import (
 	"fmt"
 
-	"github.com/CloudKeter/rc-mcp/internal/devices"
-	"github.com/CloudKeter/rc-mcp/internal/transport"
+	"github.com/champi-ai/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/transport"
 )
 
 // shellWorkflow builds the Section 5.3 template.

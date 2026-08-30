@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/session"
 )
 
 // heartbeatInterval is how often the SSE writer sends a comment-only

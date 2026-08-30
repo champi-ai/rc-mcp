@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/CloudKeter/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/session"
 )
 
 // maxRequestBodyBytes bounds how much of a POST /mcp body the handler will

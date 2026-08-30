@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/agent"
-	"github.com/CloudKeter/rc-mcp/internal/audit"
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
-	"github.com/CloudKeter/rc-mcp/internal/session"
-	"github.com/CloudKeter/rc-mcp/internal/transport"
+	"github.com/champi-ai/rc-mcp/internal/agent"
+	"github.com/champi-ai/rc-mcp/internal/audit"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/transport"
 )
 
 func newInputTestDeps(t *testing.T, dispatch *fakeDispatcher) InputDeps {

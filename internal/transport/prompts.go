@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/CloudKeter/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/session"
 )
 
 // PromptArgument describes one argument of a prompt (prompts/list).

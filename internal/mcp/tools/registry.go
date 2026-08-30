@@ -12,10 +12,10 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/CloudKeter/rc-mcp/internal/devices"
-	"github.com/CloudKeter/rc-mcp/internal/mcp/schema"
-	"github.com/CloudKeter/rc-mcp/internal/session"
-	"github.com/CloudKeter/rc-mcp/internal/transport"
+	"github.com/champi-ai/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/mcp/schema"
+	"github.com/champi-ai/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/transport"
 )
 
 // HandlerFunc executes one tool invocation. It is called only after the

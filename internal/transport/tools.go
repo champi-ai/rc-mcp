@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/CloudKeter/rc-mcp/internal/session"
+	"github.com/champi-ai/rc-mcp/internal/session"
 )
 
 // ToolDescriptor is the tools/list representation of a single registered

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/internal/agent"
-	"github.com/CloudKeter/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/agent"
+	"github.com/champi-ai/rc-mcp/internal/devices"
 )
 
 func TestHealthHandler_ZeroAgents(t *testing.T) {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/CloudKeter/rc-mcp/internal/devices"
-	"github.com/CloudKeter/rc-mcp/internal/transport"
+	"github.com/champi-ai/rc-mcp/internal/devices"
+	"github.com/champi-ai/rc-mcp/internal/transport"
 )
 
 // safeCleanup builds the Section 5.2 template.

@@ -15,9 +15,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/CloudKeter/rc-mcp/agent/client"
-	"github.com/CloudKeter/rc-mcp/agent/updater"
-	"github.com/CloudKeter/rc-mcp/internal/protocol"
+	"github.com/champi-ai/rc-mcp/agent/client"
+	"github.com/champi-ai/rc-mcp/agent/updater"
+	"github.com/champi-ai/rc-mcp/internal/protocol"
 )
 
 // version is stamped at build time via -ldflags "-X main.version=...", set
@@ -300,7 +300,7 @@ func loadConfig() (config, error) {
 	}
 	updateBaseURL := os.Getenv("AGENT_UPDATE_BASE_URL")
 	if updateBaseURL == "" {
-		updateBaseURL = "https://github.com/CloudKeter/rc-mcp/releases/download"
+		updateBaseURL = "https://github.com/champi-ai/rc-mcp/releases/download"
 	}
 	systemdUnit := os.Getenv("AGENT_SYSTEMD_UNIT")
 	if systemdUnit == "" {
