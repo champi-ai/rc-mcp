@@ -44,12 +44,21 @@ chmod +x "rc-mcp-agent-linux-${arch}"
 
 ## Cutting a release
 
+**Automatic (default):** `release-please` (`.github/workflows/release-please.yml`)
+watches Conventional Commits on `main` and keeps an open release PR for the
+agent component up to date with the next version and changelog. Merging
+that PR pushes the `agent-vX.Y.Z` tag itself, which triggers this build.
+See [`docs/operations/releases.md`](releases.md).
+
+**Manual override:**
+
 ```sh
 git tag agent-v0.3.0
 git push origin agent-v0.3.0
 ```
 
-The workflow builds and publishes automatically; no manual upload step.
+Either way, the workflow builds and publishes automatically once the tag
+lands; no manual upload step.
 
 ## Auto-update
 

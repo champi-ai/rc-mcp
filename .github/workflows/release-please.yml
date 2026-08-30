@@ -1,0 +1,24 @@
+name: Release Please
+
+# Maintains a per-component release PR (agent, server) from Conventional
+# Commits on main. Merging a release PR bumps that component's version,
+# updates its changelog, and pushes an agent-vX.Y.Z / server-vX.Y.Z tag +
+# GitHub Release -- which in turn triggers release-agent.yml /
+# release-server.yml via their own tag-push triggers.
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
