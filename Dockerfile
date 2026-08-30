@@ -1,5 +1,5 @@
 # Multi-stage build for rc-mcp-server. See docs/specs/backend.md Section 14.
-FROM golang:1.23-alpine AS builder
+FROM golang:1.25-alpine AS builder
 WORKDIR /build
 COPY go.mod go.sum ./
 RUN go mod download
