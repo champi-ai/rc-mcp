@@ -1,0 +1,62 @@
+# rc-mcp
+
+> Personal fleet remote-control system built on the Model Context Protocol
+> (MCP). Lets an MCP-capable LLM client (Claude Desktop, Claude Code, or any
+> spec-compliant host) inspect and control your own Linux desktop machines:
+> shell, filesystem, processes, screenshots, sysinfo, and (opt-in) input
+> injection.
+
+Single-operator tool, not a multi-tenant service: no user management or
+RBAC. The security model keeps the LLM client from doing anything the
+operator didn't approve in the moment, not from isolating users from each
+other.
+
+Two binaries, one Go module (`github.com/champi-ai/rc-mcp`, Go 1.25+):
+
+- `rc-mcp-server` (`cmd/server`) — relay hub. Speaks MCP over Streamable
+  HTTP to LLM clients and a WebSocket wire protocol to agents; routes tool
+  calls between them; never executes tool logic itself. Also serves a
+  loopback-only admin API/web UI for pairing.
+- `rc-mcp-agent` (`cmd/agent`) — runs on each controlled machine. Dials out
+  to the server (no inbound port needed), and does the actual work.
+
+Everything that mutates state requires live MCP elicitation confirmation
+from the human at the client before dispatch; every call is audited.
+
+## Core docs
+
+- [README.md](README.md): project overview, quick start (run server, pair
+  a machine, point an MCP client at it), configuration env vars, security
+  model.
+- [docs/specs/backend.md](docs/specs/backend.md): the full protocol, wire
+  format, and architecture specification — authoritative source for tool
+  schemas, message types, and config.
+
+## Operations
+
+- [docs/operations/releases.md](docs/operations/releases.md): how the
+  agent and server components are versioned and released (release-please
+  on merge to main, or manual tag push).
+- [docs/operations/agent-releases.md](docs/operations/agent-releases.md):
+  agent binary release/download URLs and the auto-update mechanism.
+- [docs/operations/server-releases.md](docs/operations/server-releases.md):
+  server Docker image release and deploy.
+- [docs/operations/scaling.md](docs/operations/scaling.md): running more
+  than one server replica with Redis-backed session/device state.
+
+## Design history
+
+- [docs/adr/](docs/adr/): architecture decision records (e.g. why Nx was
+  tried for CI orchestration, then dropped — see ADR 0001, superseded).
+- [docs/phases/](docs/phases/): how the MVP and post-MVP work was
+  sequenced.
+- [docs/review/senior-review.md](docs/review/senior-review.md): senior
+  review notes on the spec before implementation began.
+
+## Optional
+
+- [.env.example](.env.example): every configuration environment variable
+  with its default.
+- [docker-compose.yml](docker-compose.yml) /
+  [docker-compose.scaling.yml](docker-compose.scaling.yml): local and
+  multi-replica deployment topology.
