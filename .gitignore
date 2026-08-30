@@ -1,0 +1,12 @@
+/bin/
+/dist/
+*.log
+.env
+node_modules/
+.nx/cache/
+.nx/workspace-data/
+/tmp/
+*.test
+docker/nginx/certs/*.crt
+docker/nginx/certs/*.key
+.claude/

@@ -1,0 +1,9 @@
+{
+  "name": "rc-mcp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Nx workspace wrapper for the rc-mcp Go module (server, agent, shared protocol). No JS/TS runtime code lives here -- Nx is used purely for affected-graph orchestration of Go build/test/lint targets.",
+  "devDependencies": {
+    "nx": "23.1.1"
+  }
+}

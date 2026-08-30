@@ -1,0 +1,30 @@
+{
+  "name": "transport",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "internal/transport",
+  "implicitDependencies": ["session"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go build ./internal/transport/...",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "go test -race ./internal/transport/...",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "golangci-lint run --allow-parallel-runners ./internal/transport/...",
+        "cwd": "{workspaceRoot}"
+      }
+    }
+  }
+}

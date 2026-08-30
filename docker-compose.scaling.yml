@@ -1,0 +1,65 @@
+# Multi-replica scaling overlay (Section 10, Section 19). Not used by a
+# default single-instance deployment. Bring it up alongside the base file
+# and the "scaling" profile:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.scaling.yml \
+#     --profile scaling up
+#
+# This adds a second mcp-server replica and points nginx at a
+# sticky-session-aware config (docker/nginx/nginx.scaling.conf) instead of
+# the single-upstream default. Both replicas are wired to point at the
+# shared redis service with MCP_SESSION_STORE=redis, which switches the
+# device registry, session-metadata mirror, AND cross-replica dispatch
+# routing to their Redis-backed implementations at once -- an agent
+# connected to mcp-server-2 is fully reachable from a session being served
+# by mcp-server, and vice versa. See docs/operations/scaling.md for the
+# full design and the sticky-session caveat that still applies to a
+# session's own SSE stream.
+#
+# See docs/operations/scaling.md for the full walkthrough, including how
+# to verify two replicas are actually being used.
+services:
+  mcp-server:
+    environment:
+      - MCP_SESSION_STORE=redis
+      - REDIS_ADDR=redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  mcp-server-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rc-mcp-server:latest
+    env_file:
+      - .env
+    environment:
+      - MCP_BIND_ADDR=0.0.0.0:8080
+      - ADMIN_BIND_ADDR=0.0.0.0:9090
+      - MCP_SESSION_STORE=redis
+      - REDIS_ADDR=redis:6379
+    volumes:
+      - audit-log:/var/log/rc-mcp
+      - device-registry:/var/lib/rc-mcp
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx:
+    volumes:
+      # Overrides the base file's single-upstream nginx.conf mount with
+      # the two-upstream, sticky-session config. Compose merges volumes
+      # lists by full re-specification of the same target path, so this
+      # entry replaces (not appends to) the base mount.
+      - ./docker/nginx/nginx.scaling.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - mcp-server
+      - mcp-server-2

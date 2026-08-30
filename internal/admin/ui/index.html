@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rc-mcp admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 24px; max-width: 960px; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: #666; margin: 0 0 24px; }
+  section { margin-bottom: 32px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: #666; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
+  th { color: #666; font-weight: 600; }
+  code { background: #f2f2f2; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  button { font: inherit; padding: 4px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fafafa; cursor: pointer; }
+  button:hover { background: #f0f0f0; }
+  button.danger { border-color: #d33; color: #d33; }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; }
+  .badge.on { background: #d7f5dd; color: #16702c; }
+  .badge.off { background: #eee; color: #777; }
+  .empty { color: #888; font-style: italic; padding: 8px 0; }
+  .err { color: #d33; margin-top: 8px; }
+  .row-actions { white-space: nowrap; }
+  .pager { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  input[type=text] { font: inherit; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; width: 140px; }
+</style>
+</head>
+<body>
+  <h1>rc-mcp admin</h1>
+  <p class="sub">Loopback-only. This page and every request it makes stay on <code>127.0.0.1</code>.</p>
+
+  <section id="pending-section">
+    <h2>Pending pairing codes</h2>
+    <div id="pending-list"></div>
+  </section>
+
+  <section id="devices-section">
+    <h2>Paired devices</h2>
+    <div id="devices-list"></div>
+  </section>
+
+  <section id="audit-section">
+    <h2>Audit log</h2>
+    <div id="audit-list"></div>
+    <div class="pager">
+      <button id="audit-prev">&laquo; newer</button>
+      <button id="audit-next">older &raquo;</button>
+      <span id="audit-range"></span>
+    </div>
+  </section>
+
+<script>
+const AUDIT_PAGE_SIZE = 25;
+let auditOffset = 0;
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  if (!res.ok) {
+    let msg = res.statusText;
+    try { const body = await res.json(); if (body.error) msg = body.error; } catch (e) {}
+    throw new Error(msg);
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+function el(tag, attrs, children) {
+  const e = document.createElement(tag);
+  for (const k in (attrs || {})) {
+    if (k === 'text') e.textContent = attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  }
+  (children || []).forEach(c => e.appendChild(c));
+  return e;
+}
+
+function showError(container, err) {
+  container.appendChild(el('div', { class: 'err', text: 'Error: ' + err.message }));
+}
+
+async function loadPending() {
+  const container = document.getElementById('pending-list');
+  container.innerHTML = '';
+  try {
+    const codes = await api('/admin/pending');
+    const pending = (codes || []).filter(c => !c.used && new Date(c.expiresAt) > new Date());
+    if (pending.length === 0) {
+      container.appendChild(el('div', { class: 'empty', text: 'No pending pairing codes.' }));
+      return;
+    }
+    const table = el('table', {}, [
+      el('tr', {}, [
+        el('th', { text: 'Code' }), el('th', { text: 'Hostname' }),
+        el('th', { text: 'Expires' }), el('th', { text: '' }),
+      ]),
+    ]);
+    for (const c of pending) {
+      const approveBtn = el('button', { text: 'Approve' });
+      approveBtn.onclick = async () => {
+        approveBtn.disabled = true;
+        try {
+          await api('/admin/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: c.code }) });
+          await refreshAll();
+        } catch (err) { showError(container, err); approveBtn.disabled = false; }
+      };
+      const rejectBtn = el('button', { text: 'Reject', class: 'danger' });
+      rejectBtn.onclick = async () => {
+        rejectBtn.disabled = true;
+        try {
+          await api('/admin/reject', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: c.code }) });
+          await refreshAll();
+        } catch (err) { showError(container, err); rejectBtn.disabled = false; }
+      };
+      table.appendChild(el('tr', {}, [
+        el('td', {}, [el('code', { text: c.code })]),
+        el('td', { text: c.hostname }),
+        el('td', { text: new Date(c.expiresAt).toLocaleString() }),
+        el('td', { class: 'row-actions' }, [approveBtn, rejectBtn]),
+      ]));
+    }
+    container.appendChild(table);
+  } catch (err) {
+    showError(container, err);
+  }
+}
+
+async function loadDevices() {
+  const container = document.getElementById('devices-list');
+  container.innerHTML = '';
+  try {
+    const data = await api('/admin/devices');
+    const devs = data.devices || [];
+    if (devs.length === 0) {
+      container.appendChild(el('div', { class: 'empty', text: 'No paired devices.' }));
+      return;
+    }
+    const table = el('table', {}, [
+      el('tr', {}, [
+        el('th', { text: 'Device' }), el('th', { text: 'Status' }),
+        el('th', { text: 'Capabilities' }), el('th', { text: 'Last seen' }), el('th', { text: '' }),
+      ]),
+    ]);
+    for (const d of devs) {
+      const revokeBtn = el('button', { text: 'Revoke', class: 'danger' });
+      revokeBtn.onclick = async () => {
+        if (!confirm('Revoke device ' + d.label + ' (' + d.clientId + ')? This cannot be undone.')) return;
+        revokeBtn.disabled = true;
+        try {
+          await api('/admin/devices/' + encodeURIComponent(d.clientId), { method: 'DELETE' });
+          await refreshAll();
+        } catch (err) { showError(container, err); revokeBtn.disabled = false; }
+      };
+      table.appendChild(el('tr', {}, [
+        el('td', {}, [
+          el('div', { text: d.label || d.clientId }),
+          el('div', {}, [el('code', { text: d.clientId })]),
+        ]),
+        el('td', {}, [el('span', { class: 'badge ' + (d.online ? 'on' : 'off'), text: d.online ? 'online' : 'offline' })]),
+        el('td', { text: (d.capabilities || []).join(', ') || '—' }),
+        el('td', { text: d.lastSeen ? new Date(d.lastSeen).toLocaleString() : '—' }),
+        el('td', { class: 'row-actions' }, [revokeBtn]),
+      ]));
+    }
+    container.appendChild(table);
+  } catch (err) {
+    showError(container, err);
+  }
+}
+
+async function loadAudit() {
+  const container = document.getElementById('audit-list');
+  container.innerHTML = '';
+  try {
+    const data = await api('/admin/audit?limit=' + AUDIT_PAGE_SIZE + '&offset=' + auditOffset);
+    const entries = data.entries || [];
+    document.getElementById('audit-range').textContent = entries.length
+      ? ('showing ' + (auditOffset + 1) + '–' + (auditOffset + entries.length))
+      : '';
+    document.getElementById('audit-prev').disabled = auditOffset === 0;
+    document.getElementById('audit-next').disabled = entries.length < AUDIT_PAGE_SIZE;
+    if (entries.length === 0) {
+      container.appendChild(el('div', { class: 'empty', text: 'No audit log entries.' }));
+      return;
+    }
+    const table = el('table', {}, [
+      el('tr', {}, [
+        el('th', { text: 'Time' }), el('th', { text: 'Session' }), el('th', { text: 'Device' }),
+        el('th', { text: 'Tool' }), el('th', { text: 'Status' }), el('th', { text: 'Duration' }), el('th', { text: 'Args' }),
+      ]),
+    ]);
+    for (const e of entries) {
+      table.appendChild(el('tr', {}, [
+        el('td', { text: new Date(e.timestamp).toLocaleString() }),
+        el('td', {}, [el('code', { text: e.sessionId })]),
+        el('td', {}, [el('code', { text: e.clientId })]),
+        el('td', { text: e.tool }),
+        el('td', { text: e.status }),
+        el('td', { text: e.durationMs + ' ms' }),
+        el('td', { text: e.argsHint || '' }),
+      ]));
+    }
+    container.appendChild(table);
+  } catch (err) {
+    showError(container, err);
+  }
+}
+
+document.getElementById('audit-prev').onclick = () => { auditOffset = Math.max(0, auditOffset - AUDIT_PAGE_SIZE); loadAudit(); };
+document.getElementById('audit-next').onclick = () => { auditOffset += AUDIT_PAGE_SIZE; loadAudit(); };
+
+async function refreshAll() {
+  await Promise.all([loadPending(), loadDevices(), loadAudit()]);
+}
+
+refreshAll();
+setInterval(() => { loadPending(); loadDevices(); }, 5000);
+</script>
+</body>
+</html>

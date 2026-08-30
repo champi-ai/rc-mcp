@@ -1,0 +1,75 @@
+name: Release Agent Binaries
+
+# Cross-compiles rc-mcp-agent for every supported architecture and
+# publishes each binary plus a checksum file to a GitHub Release, per
+# docs/specs/backend.md Section 19 ("Agent binary release pipeline").
+# Triggered by pushing a tag of the form agent-vX.Y.Z.
+on:
+  push:
+    tags:
+      - "agent-v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.23"
+          cache-dependency-path: go.sum
+
+      - name: Determine version from tag
+        id: version
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "version=${tag#agent-v}" >> "$GITHUB_OUTPUT"
+
+      # Cross-compiles for every architecture the agent supports today
+      # (Section 19). The agent has no cgo dependencies (xgb, creack/pty,
+      # gorilla/websocket are all pure Go), so CGO_ENABLED=0 cross-compiles
+      # cleanly with the standard toolchain -- no per-arch C toolchain
+      # needed.
+      - name: Cross-compile agent binaries
+        run: |
+          set -eu
+          mkdir -p dist
+          version="${{ steps.version.outputs.version }}"
+          for arch in amd64 arm64; do
+            out="dist/rc-mcp-agent-linux-${arch}"
+            echo "Building ${out}..."
+            GOOS=linux GOARCH="${arch}" CGO_ENABLED=0 \
+              go build -trimpath -ldflags="-s -w -X main.version=${version}" \
+              -o "${out}" ./cmd/agent
+          done
+
+      # One checksum file per binary (for the auto-update mechanism to
+      # verify a single downloaded file) plus a combined SHA256SUMS
+      # covering everything in the release (for an operator verifying by
+      # hand).
+      - name: Generate checksums
+        working-directory: dist
+        run: |
+          set -eu
+          for f in rc-mcp-agent-*; do
+            sha256sum "${f}" > "${f}.sha256"
+          done
+          sha256sum rc-mcp-agent-* > SHA256SUMS
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: "Agent ${{ steps.version.outputs.tag }}"
+          files: |
+            dist/rc-mcp-agent-linux-amd64
+            dist/rc-mcp-agent-linux-amd64.sha256
+            dist/rc-mcp-agent-linux-arm64
+            dist/rc-mcp-agent-linux-arm64.sha256
+            dist/SHA256SUMS
+          generate_release_notes: true
