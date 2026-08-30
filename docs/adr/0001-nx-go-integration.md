@@ -1,5 +1,11 @@
 # ADR 0001: Nx <-> Go integration via nx:run-commands
 
+> **Superseded:** Nx tooling was removed from this repo (see #3). The
+> affected-graph orchestration it provided wasn't earning its keep for a
+> single Go module at this size — CI now runs `go build`/`go vet`/`go test`
+> directly. Kept here for historical context on why Nx was adopted in the
+> first place.
+
 ## Decision
 
 Use the built-in `nx:run-commands` executor to wrap the plain Go toolchain

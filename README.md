@@ -164,11 +164,10 @@ go build ./...
 go test ./...
 ```
 
-This is a Go module wrapped in an [Nx](https://nx.dev) workspace purely for
-affected-graph CI orchestration (`npx nx affected -t lint,test,build`) —
-there's no JS/TS runtime code here. See
+This is a plain Go module — no Nx, no JS/TS runtime code. CI runs
+`go build`, `go vet`/`golangci-lint`, and `go test` directly. See
 [`docs/adr/0001-nx-go-integration.md`](docs/adr/0001-nx-go-integration.md)
-for why.
+for the history of why Nx was tried and later dropped.
 
 ## Docs
 
