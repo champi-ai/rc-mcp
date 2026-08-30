@@ -14,8 +14,8 @@ import (
 )
 
 // pairingTTL is intentionally generous rather than tight: these tests run
-// under `nx affected` with several Go test binaries executing concurrently
-// in CI, and a short TTL (e.g. 200ms) was observed to expire pairing codes
+// with several Go test binaries executing concurrently in CI, and a short
+// TTL (e.g. 200ms) was observed to expire pairing codes
 // before ApprovePairing/NotifyApproved could run, causing flaky failures
 // under CPU contention. TestPairingExpiry_SendsErrorAndCloses still waits
 // past this TTL to exercise the actual expiry path.

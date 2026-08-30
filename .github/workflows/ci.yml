@@ -13,40 +13,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  affected:
+  build-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          # nx affected needs history to diff against the base branch.
-          fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version: "1.25"
           cache-dependency-path: go.sum
 
-      - name: Install golangci-lint
+      - name: Lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.61.0
-          # Only install the binary here; linting itself runs per-project
-          # via `nx affected -t lint`, so skip this action's own run step.
-          args: --help
-          skip-cache: true
 
-      - name: Install workspace dependencies
-        run: npm ci
+      - name: Build
+        run: go build ./...
 
-      # Sets NX_BASE/NX_HEAD so `nx affected` diffs the PR against its
-      # actual merge base on main (or the previous pushed commit on main
-      # itself), not just HEAD~1.
-      - uses: nrwl/nx-set-shas@v4
-
-      - name: Run affected lint, test, build
-        run: npx nx affected -t lint,test,build --parallel=3
+      - name: Test
+        run: go test ./...
