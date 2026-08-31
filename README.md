@@ -182,6 +182,9 @@ A few things are load-bearing, not incidental:
   machine, and each connection re-authenticates with a per-device token
   the server can revoke at any time.
 
+Found a vulnerability? See [`SECURITY.md`](SECURITY.md) for how to report
+it privately.
+
 ## Development
 
 ```sh

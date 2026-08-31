@@ -31,6 +31,8 @@ from the human at the client before dispatch; every call is audited.
 - [docs/specs/backend.md](docs/specs/backend.md): the full protocol, wire
   format, and architecture specification — authoritative source for tool
   schemas, message types, and config.
+- [SECURITY.md](SECURITY.md): how to report a vulnerability privately,
+  scope, and supported versions.
 
 ## Installation
 
