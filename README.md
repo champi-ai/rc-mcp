@@ -209,3 +209,7 @@ for the history of why Nx was tried and later dropped.
 - [`docs/phases/`](docs/phases) — how the MVP and post-MVP work was
   sequenced.
 - [`docs/adr/`](docs/adr) — architecture decision records.
+
+## License
+
+[MIT](LICENSE)
