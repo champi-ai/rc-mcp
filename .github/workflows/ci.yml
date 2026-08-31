@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 # Cancel superseded runs on the same ref to avoid burning CI minutes on
 # stale pushes.
