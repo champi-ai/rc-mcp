@@ -69,10 +69,14 @@ You'll need Go 1.25+ and, for the container path, Docker.
 ### 1. Run the server
 
 ```sh
-export AUTH_TOKEN=$(openssl rand -hex 64)   # required — the server won't start without it
-export RC_AUDIT_LOG_PATH=./rc-mcp-audit.log # the production default (/var/log/rc-mcp/...) needs root
+export AUTH_TOKEN=$(openssl rand -hex 64)          # required — the server won't start without it
+export RC_AUDIT_LOG_PATH=./rc-mcp-audit.log         # production default (/var/log/rc-mcp/...) needs root
+export DEVICE_REGISTRY_PATH=./rc-mcp-devices.json   # production default (/var/lib/rc-mcp/...) needs root
 go run ./cmd/server
 ```
+
+This serves plain `ws://` (no TLS) on `0.0.0.0:8080` — fine for same-host
+or same-LAN testing, but see Docker Compose below for a real deployment.
 
 Or via Docker Compose, which additionally fronts the server with nginx over
 TLS (see [`docker-compose.yml`](docker-compose.yml) and
@@ -91,15 +95,25 @@ never proxied.
 
 ### 2. Pair a machine
 
-On the machine you want to control:
+On the machine you want to control (use `wss://your-server-host/agent/ws`
+instead if you're going through the Docker Compose/nginx TLS path above):
 
 ```sh
-export AGENT_SERVER_URL=wss://your-server-host/agent/ws
+export AGENT_SERVER_URL=ws://127.0.0.1:8080/agent/ws
 go run ./cmd/agent
 ```
 
-First run has no device token yet, so the agent prints a pairing code and
-waits. Approve it from the server host:
+First run has no device token yet, so the agent prints a pairing code (a
+fresh one each run — don't reuse an old one) and waits:
+
+```
+Pairing code: ABCD-1234
+Expires at:   2026-01-01T00:05:00Z
+Approve on the server with: curl -X POST http://127.0.0.1:9090/admin/approve -d '{"code":"ABCD-1234"}'
+```
+
+Run that `curl` command (with *your* printed code, not the example above)
+from the server host:
 
 ```sh
 curl -X POST http://127.0.0.1:9090/admin/approve -d '{"code":"ABCD-1234"}'
