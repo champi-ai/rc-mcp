@@ -173,6 +173,10 @@ for the history of why Nx was tried and later dropped.
 
 - [`llms.txt`](llms.txt) — condensed, LLM-oriented index of this repo's
   docs (see [llmstxt.org](https://llmstxt.org)).
+- [`docs/guides/install-server.md`](docs/guides/install-server.md) and
+  [`docs/guides/install-agent.md`](docs/guides/install-agent.md) — install
+  guides beyond this README's quick start: Docker Compose, published
+  images, and systemd services for a from-source install.
 - [`docs/specs/backend.md`](docs/specs/backend.md) — the full protocol,
   wire format, and architecture specification.
 - [`docs/operations/`](docs/operations) — running a release pipeline,
