@@ -71,9 +71,9 @@ func (c *Client) Pair(ctx context.Context, hostname string, out io.Writer) (*Pai
 		return nil, fmt.Errorf("decode pair_code: %w", err)
 	}
 
-	fmt.Fprintf(out, "\nPairing code: %s\n", codePayload.Code)
-	fmt.Fprintf(out, "Expires at:   %s\n", codePayload.ExpiresAt.Format(time.RFC3339))
-	fmt.Fprintf(out, "Approve on the server with: rc-mcp-admin approve %s\n\n", codePayload.Code)
+	_, _ = fmt.Fprintf(out, "\nPairing code: %s\n", codePayload.Code)
+	_, _ = fmt.Fprintf(out, "Expires at:   %s\n", codePayload.ExpiresAt.Format(time.RFC3339))
+	_, _ = fmt.Fprintf(out, "Approve on the server with: rc-mcp-admin approve %s\n\n", codePayload.Code)
 
 	for {
 		var next protocol.Envelope
@@ -96,10 +96,10 @@ func (c *Client) Pair(ctx context.Context, hostname string, out io.Writer) (*Pai
 			}
 			switch errPayload.Code {
 			case "pairing_expired":
-				fmt.Fprintln(out, "Pairing code expired before it was approved. Restarting pairing...")
+				_, _ = fmt.Fprintln(out, "Pairing code expired before it was approved. Restarting pairing...")
 				return nil, ErrPairingExpired
 			case "pairing_rejected":
-				fmt.Fprintln(out, "Pairing code was rejected by the operator.")
+				_, _ = fmt.Fprintln(out, "Pairing code was rejected by the operator.")
 				return nil, ErrPairingRejected
 			default:
 				return nil, fmt.Errorf("pairing failed: %s: %s", errPayload.Code, errPayload.Message)

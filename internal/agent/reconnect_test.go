@@ -189,7 +189,7 @@ func TestRevokeDevice_ClosesConnectionAndExpiresState(t *testing.T) {
 
 	// The agent observes a "close" envelope with reason "revoked" (or the
 	// raw WS close, depending on timing).
-	conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+	_ = conn.SetReadDeadline(time.Now().Add(2 * time.Second))
 	var sawRevoked bool
 	for {
 		var env protocol.Envelope

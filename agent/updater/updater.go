@@ -149,7 +149,7 @@ func fetch(ctx context.Context, client *http.Client, url string) ([]byte, error)
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status %d from %s", resp.StatusCode, url)
 	}
@@ -183,7 +183,7 @@ func replaceSelf(data []byte, execPath string) error {
 		return err
 	}
 	tmpPath := tmp.Name()
-	defer os.Remove(tmpPath) // no-op once renamed
+	defer func() { _ = os.Remove(tmpPath) }() // no-op once renamed
 
 	if _, err := tmp.Write(data); err != nil {
 		tmp.Close()

@@ -133,10 +133,9 @@ func (c *Connection) run() {
 		c.writeLoop()
 	}()
 
-	c.ws.SetReadDeadline(time.Now().Add(pongWait))
+	_ = c.ws.SetReadDeadline(time.Now().Add(pongWait))
 	c.ws.SetPongHandler(func(string) error {
-		c.ws.SetReadDeadline(time.Now().Add(pongWait))
-		return nil
+		return c.ws.SetReadDeadline(time.Now().Add(pongWait))
 	})
 
 	heartbeatDone := make(chan struct{})
@@ -223,7 +222,7 @@ func (c *Connection) trySend(env protocol.Envelope) {
 
 func (c *Connection) writeLoop() {
 	write := func(env protocol.Envelope) bool {
-		c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+		_ = c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 		if err := c.ws.WriteJSON(env); err != nil {
 			log.Printf("agent connection: write failed: %v", err)
 			return false
@@ -259,7 +258,7 @@ func (c *Connection) heartbeatLoop() {
 	for {
 		select {
 		case <-ticker.C:
-			c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+			_ = c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := c.ws.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeWait)); err != nil {
 				return
 			}

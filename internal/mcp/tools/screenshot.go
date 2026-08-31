@@ -402,9 +402,10 @@ func (d ScreenshotDeps) runWatch(ctx context.Context, cancel context.CancelFunc,
 	}
 
 	auditStatus := audit.StatusOK
-	if status == jobs.JobStatusFailed {
+	switch status {
+	case jobs.JobStatusFailed:
 		auditStatus = audit.StatusError
-	} else if status == jobs.JobStatusCancelled {
+	case jobs.JobStatusCancelled:
 		auditStatus = audit.StatusCancelled
 	}
 	d.logAudit(sess.ID, input.ClientID, "screenshot_watch", input, auditStatus, duration, errMsg)

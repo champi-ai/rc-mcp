@@ -129,7 +129,7 @@ func (r *FileRegistry) saveLocked() error {
 		return fmt.Errorf("create temp registry file: %w", err)
 	}
 	tmpPath := tmp.Name()
-	defer os.Remove(tmpPath) // no-op once renamed
+	defer func() { _ = os.Remove(tmpPath) }() // no-op once renamed
 
 	if _, err := tmp.Write(data); err != nil {
 		tmp.Close()
