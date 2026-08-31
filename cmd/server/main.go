@@ -48,9 +48,16 @@ const (
 	sessionStoreRedis  = "redis"
 )
 
+// version is stamped at build time via -ldflags "-X main.version=...", set
+// by the release pipeline to the tagged release version ("dev" for a
+// local/untagged build). See docs/operations/server-releases.md.
+var version = "dev"
+
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
+
+	log.Printf("rc-mcp-server: version %s", version)
 
 	if err := run(ctx, loadConfig()); err != nil {
 		log.Fatalf("rc-mcp-server: %v", err)

@@ -4,7 +4,10 @@ WORKDIR /build
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /rc-mcp-server ./cmd/server
+# VERSION is passed via --build-arg from the release workflow (server-vX.Y.Z
+# tag); defaults to "dev" for a local `docker build` with no arg.
+ARG VERSION=dev
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w -X main.version=${VERSION}" -o /rc-mcp-server ./cmd/server
 
 FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=builder /rc-mcp-server /rc-mcp-server

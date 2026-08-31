@@ -40,6 +40,9 @@ from the human at the client before dispatch; every call is audited.
 - [docs/guides/install-agent.md](docs/guides/install-agent.md): installing
   the agent on a controlled machine as a systemd user service, config,
   and pairing it with the server.
+- [docs/examples/mcp-config.json](docs/examples/mcp-config.json): example
+  `mcpServers` JSON config for pointing Claude Desktop/Claude Code at the
+  server.
 
 ## Operations
 
