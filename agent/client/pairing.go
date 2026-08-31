@@ -73,7 +73,7 @@ func (c *Client) Pair(ctx context.Context, hostname string, out io.Writer) (*Pai
 
 	_, _ = fmt.Fprintf(out, "\nPairing code: %s\n", codePayload.Code)
 	_, _ = fmt.Fprintf(out, "Expires at:   %s\n", codePayload.ExpiresAt.Format(time.RFC3339))
-	_, _ = fmt.Fprintf(out, "Approve on the server with: rc-mcp-admin approve %s\n\n", codePayload.Code)
+	_, _ = fmt.Fprintf(out, "Approve on the server with: curl -X POST http://127.0.0.1:9090/admin/approve -d '{\"code\":\"%s\"}'\n\n", codePayload.Code)
 
 	for {
 		var next protocol.Envelope

@@ -104,13 +104,15 @@ waits:
 ```
 $ rc-mcp-agent
 Pairing code: ABCD-1234
+Expires at:   2026-01-01T00:05:00Z
+Approve on the server with: curl -X POST http://127.0.0.1:9090/admin/approve -d '{"code":"ABCD-1234"}'
 ```
 
 It expires after `PAIRING_CODE_TTL` (server-side default 5m) — approve it
 before then, or the agent will print a message and restart pairing with a
 fresh code.
 
-Approve it from the server host:
+Run that `curl` command (with *your* printed code) from the server host:
 
 ```sh
 curl -X POST http://127.0.0.1:9090/admin/approve -d '{"code":"ABCD-1234"}'
