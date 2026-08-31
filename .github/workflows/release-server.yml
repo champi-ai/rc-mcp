@@ -1,17 +1,22 @@
 name: Release Server Image
 
-# Builds rc-mcp-server as a multi-arch Docker image and publishes it to
-# GHCR, tagged with the release version and `latest`. Triggered by pushing
-# a tag of the form server-vX.Y.Z. Mirrors release-agent.yml's tag-driven
-# release flow, but the server's deployable artifact is a container image
-# (see docker-compose.yml), not a standalone binary.
+# Publishes two artifact kinds for rc-mcp-server, triggered by pushing a
+# tag of the form server-vX.Y.Z:
+#   - a multi-arch (linux/amd64, linux/arm64) Docker image to GHCR, tagged
+#     with the release version and `latest` (the primary path -- see
+#     docker-compose.yml)
+#   - standalone cross-compiled binaries + checksums attached to the
+#     GitHub Release, for a from-source/systemd install without Docker
+#     (see docs/guides/install-server.md Option C)
+# Mirrors release-agent.yml's tag-driven release flow and binary/checksum
+# layout.
 on:
   push:
     tags:
       - "server-v*.*.*"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 env:
@@ -30,6 +35,48 @@ jobs:
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
           echo "version=${tag#server-v}" >> "$GITHUB_OUTPUT"
 
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: "1.25"
+          cache-dependency-path: go.sum
+
+      # No cgo dependencies (same as the agent -- see release-agent.yml),
+      # so CGO_ENABLED=0 cross-compiles cleanly with the standard toolchain.
+      - name: Cross-compile server binaries
+        run: |
+          set -eu
+          mkdir -p dist
+          version="${{ steps.version.outputs.version }}"
+          for arch in amd64 arm64; do
+            out="dist/rc-mcp-server-linux-${arch}"
+            echo "Building ${out}..."
+            GOOS=linux GOARCH="${arch}" CGO_ENABLED=0 \
+              go build -trimpath -ldflags="-s -w -X main.version=${version}" \
+              -o "${out}" ./cmd/server
+          done
+
+      - name: Generate checksums
+        working-directory: dist
+        run: |
+          set -eu
+          for f in rc-mcp-server-*; do
+            sha256sum "${f}" > "${f}.sha256"
+          done
+          sha256sum rc-mcp-server-* > SHA256SUMS
+
+      - name: Publish binaries to GitHub Release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: "Server ${{ steps.version.outputs.tag }}"
+          files: |
+            dist/rc-mcp-server-linux-amd64
+            dist/rc-mcp-server-linux-amd64.sha256
+            dist/rc-mcp-server-linux-arm64
+            dist/rc-mcp-server-linux-arm64.sha256
+            dist/SHA256SUMS
+          generate_release_notes: true
+
       - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3.7.0
 
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
@@ -41,12 +88,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push image
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          build-args: |
+            VERSION=${{ steps.version.outputs.version }}
           tags: |
             ${{ env.IMAGE }}:${{ steps.version.outputs.version }}
             ${{ env.IMAGE }}:latest

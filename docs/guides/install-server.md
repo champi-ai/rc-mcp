@@ -81,11 +81,23 @@ docker run -d --name rc-mcp-server \
 Point your own TLS-terminating proxy at `127.0.0.1:8080` for MCP/agent
 traffic. Do **not** expose `9090` (admin API) through it.
 
-## Option C: From source, as a systemd service
+## Option C: Standalone binary, as a systemd service
 
-No Docker: build the binary and run it directly, e.g. on a small VM.
+No Docker: run the binary directly, e.g. on a small VM.
 
-**Requirements:** Go 1.25+.
+```sh
+version=0.1.0        # see docs/operations/server-releases.md for the latest
+arch=amd64            # or arm64
+base="https://github.com/champi-ai/rc-mcp/releases/download/server-v${version}"
+
+curl -fLO "${base}/rc-mcp-server-linux-${arch}"
+curl -fLO "${base}/rc-mcp-server-linux-${arch}.sha256"
+sha256sum -c "rc-mcp-server-linux-${arch}.sha256"
+chmod +x "rc-mcp-server-linux-${arch}"
+sudo mv "rc-mcp-server-linux-${arch}" /usr/local/bin/rc-mcp-server
+```
+
+No release published yet? Build from source instead (Go 1.25+):
 
 ```sh
 git clone https://github.com/champi-ai/rc-mcp.git
@@ -132,5 +144,8 @@ sudo systemctl status rc-mcp-server
 ## Next steps
 
 - [Install an agent](install-agent.md) on a machine you want to control.
+- Point an MCP client at the server — see
+  [`docs/examples/mcp-config.json`](../examples/mcp-config.json) and the
+  [README's Quick Start](../../README.md#quick-start).
 - [`docs/operations/scaling.md`](../operations/scaling.md) — running more
   than one server replica behind a load balancer.

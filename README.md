@@ -112,8 +112,33 @@ own from then on, including after the server or machine restarts.
 ### 3. Point an MCP client at it
 
 Configure your MCP client (Claude Desktop, Claude Code, etc.) with the
-server's `/mcp` endpoint and the `AUTH_TOKEN` bearer token. The client will
-see whichever tools your paired agents have capabilities enabled for.
+server's `/mcp` endpoint and the `AUTH_TOKEN` bearer token, e.g. in
+`claude_desktop_config.json` or a project's `.mcp.json`
+(see [`docs/examples/mcp-config.json`](docs/examples/mcp-config.json)):
+
+```json
+{
+  "mcpServers": {
+    "rc-mcp": {
+      "type": "http",
+      "url": "https://your-server-host/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_AUTH_TOKEN"
+      }
+    }
+  }
+}
+```
+
+or with the Claude Code CLI:
+
+```sh
+claude mcp add --transport http rc-mcp https://your-server-host/mcp \
+  --header "Authorization: Bearer YOUR_AUTH_TOKEN"
+```
+
+The client will see whichever tools your paired agents have capabilities
+enabled for.
 
 ## Configuration
 
