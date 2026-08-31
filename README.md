@@ -64,12 +64,13 @@ append-only audit log.
 
 ## Quick start
 
-You'll need Go 1.23+ and, for the container path, Docker.
+You'll need Go 1.25+ and, for the container path, Docker.
 
 ### 1. Run the server
 
 ```sh
 export AUTH_TOKEN=$(openssl rand -hex 64)   # required — the server won't start without it
+export RC_AUDIT_LOG_PATH=./rc-mcp-audit.log # the production default (/var/log/rc-mcp/...) needs root
 go run ./cmd/server
 ```
 
