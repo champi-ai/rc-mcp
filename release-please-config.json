@@ -1,0 +1,23 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    "cmd/agent": {
+      "release-type": "simple",
+      "component": "agent",
+      "include-component-in-tag": true,
+      "include-v-in-tag": true,
+      "tag-separator": "-",
+      "changelog-path": "CHANGELOG-agent.md",
+      "extra-files": []
+    },
+    "cmd/server": {
+      "release-type": "simple",
+      "component": "server",
+      "include-component-in-tag": true,
+      "include-v-in-tag": true,
+      "tag-separator": "-",
+      "changelog-path": "CHANGELOG-server.md",
+      "extra-files": []
+    }
+  }
+}

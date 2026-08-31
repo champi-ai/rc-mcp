@@ -14,12 +14,21 @@ ghcr.io/champi-ai/rc-mcp:latest
 
 ## Cutting a release
 
+**Automatic (default):** `release-please` (`.github/workflows/release-please.yml`)
+watches Conventional Commits on `main` and keeps an open release PR for the
+server component up to date with the next version and changelog. Merging
+that PR pushes the `server-vX.Y.Z` tag itself, which triggers this build.
+See [`docs/operations/releases.md`](releases.md).
+
+**Manual override:**
+
 ```sh
 git tag server-v0.3.0
 git push origin server-v0.3.0
 ```
 
-The workflow builds and pushes automatically; no manual `docker push` step.
+Either way, the workflow builds and pushes automatically once the tag
+lands; no manual `docker push` step.
 
 ## Deploying a published image
 
