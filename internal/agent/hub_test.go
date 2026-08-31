@@ -50,7 +50,7 @@ func dialWS(t *testing.T, srv *httptest.Server) *websocket.Conn {
 
 func readEnvelope(t *testing.T, conn *websocket.Conn, timeout time.Duration) protocol.Envelope {
 	t.Helper()
-	conn.SetReadDeadline(time.Now().Add(timeout))
+	_ = conn.SetReadDeadline(time.Now().Add(timeout))
 	var env protocol.Envelope
 	if err := conn.ReadJSON(&env); err != nil {
 		t.Fatalf("read envelope: %v", err)

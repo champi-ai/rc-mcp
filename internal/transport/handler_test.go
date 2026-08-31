@@ -26,7 +26,7 @@ func doInitialize(t *testing.T, srv *httptest.Server) string {
 	if err != nil {
 		t.Fatalf("POST initialize: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("initialize status = %d, want 200", resp.StatusCode)
 	}
@@ -66,7 +66,7 @@ func TestHandler_MissingSessionIDReturns404(t *testing.T) {
 	if err != nil {
 		t.Fatalf("POST: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("status = %d, want 404", resp.StatusCode)
 	}
@@ -83,7 +83,7 @@ func TestHandler_UnknownSessionIDReturns404(t *testing.T) {
 	if err != nil {
 		t.Fatalf("POST: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("status = %d, want 404", resp.StatusCode)
 	}
@@ -101,7 +101,7 @@ func TestHandler_ToolsListEmptyByDefault(t *testing.T) {
 	if err != nil {
 		t.Fatalf("POST: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	var out map[string]any
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		t.Fatalf("decode response: %v", err)
@@ -125,7 +125,7 @@ func TestHandler_ToolsCallUnregisteredIsMethodNotFound(t *testing.T) {
 	if err != nil {
 		t.Fatalf("POST: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	var out map[string]any
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		t.Fatalf("decode response: %v", err)
@@ -169,7 +169,7 @@ func TestHandler_ToolsCallSuccess(t *testing.T) {
 	if err != nil {
 		t.Fatalf("POST: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	var out map[string]any
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		t.Fatalf("decode response: %v", err)
@@ -207,10 +207,10 @@ func TestHandler_ToolsCallRateLimited(t *testing.T) {
 	}
 
 	resp1 := doToolCall(10)
-	resp1.Body.Close()
+	_ = resp1.Body.Close()
 
 	resp2 := doToolCall(11)
-	defer resp2.Body.Close()
+	defer func() { _ = resp2.Body.Close() }()
 	var out map[string]any
 	if err := json.NewDecoder(resp2.Body).Decode(&out); err != nil {
 		t.Fatalf("decode response: %v", err)
@@ -247,7 +247,7 @@ func TestHandler_ConcurrentDispatchCapRejectsRatherThanQueues(t *testing.T) {
 		req.Header.Set(SessionIDHeader, sid)
 		resp, err := http.DefaultClient.Do(req)
 		if err == nil {
-			resp.Body.Close()
+			_ = resp.Body.Close()
 		}
 	}()
 	<-started // first call is now occupying the only slot
@@ -258,7 +258,7 @@ func TestHandler_ConcurrentDispatchCapRejectsRatherThanQueues(t *testing.T) {
 	if err != nil {
 		t.Fatalf("POST: %v", err)
 	}
-	defer resp2.Body.Close()
+	defer func() { _ = resp2.Body.Close() }()
 	var out map[string]any
 	if err := json.NewDecoder(resp2.Body).Decode(&out); err != nil {
 		t.Fatalf("decode response: %v", err)
@@ -286,7 +286,7 @@ func TestHandler_DeleteTerminatesSession(t *testing.T) {
 	if err != nil {
 		t.Fatalf("DELETE: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusNoContent {
 		t.Fatalf("status = %d, want 204", resp.StatusCode)
 	}
@@ -333,7 +333,7 @@ func TestHandler_SSEStreamAndReplay(t *testing.T) {
 	}
 
 	cancel()
-	resp.Body.Close()
+	_ = resp.Body.Close()
 
 	// Give the server a moment to notice the disconnect before we emit the
 	// event we expect to be replay-only.
@@ -357,7 +357,7 @@ func TestHandler_SSEStreamAndReplay(t *testing.T) {
 	if err != nil {
 		t.Fatalf("reconnect GET: %v", err)
 	}
-	defer resp2.Body.Close()
+	defer func() { _ = resp2.Body.Close() }()
 	reader2 := bufio.NewReader(resp2.Body)
 	line2 := readSSEDataLine(t, reader2)
 	if line2 != `{"missed":2}` {
@@ -387,7 +387,7 @@ func TestHandler_SSEReplayTooOldReturns204(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GET: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusNoContent {
 		t.Fatalf("status = %d, want 204", resp.StatusCode)
 	}
@@ -430,7 +430,7 @@ func TestHandler_ToolsCallRPCErrorDataReachesWire(t *testing.T) {
 	if err != nil {
 		t.Fatalf("POST: %v", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	var out struct {
 		Error struct {
 			Code int `json:"code"`
@@ -486,7 +486,7 @@ func TestHandler_ResourcesRouting(t *testing.T) {
 		if err != nil {
 			t.Fatalf("POST: %v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		var out map[string]any
 		if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 			t.Fatalf("decode: %v", err)
@@ -568,7 +568,7 @@ func TestHandler_PromptsRouting(t *testing.T) {
 		if err != nil {
 			t.Fatalf("POST: %v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		var out map[string]any
 		if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 			t.Fatalf("decode: %v", err)
@@ -626,7 +626,7 @@ func TestHandler_CompletionRouting(t *testing.T) {
 		if err != nil {
 			t.Fatalf("POST: %v", err)
 		}
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		var out map[string]any
 		if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 			t.Fatalf("decode: %v", err)

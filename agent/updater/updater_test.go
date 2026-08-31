@@ -85,7 +85,7 @@ func testServer(t *testing.T, binary []byte, corruptChecksum bool) *httptest.Ser
 		_, _ = w.Write(binary)
 	})
 	mux.HandleFunc("/agent-v1.2.3/rc-mcp-agent-linux-amd64.sha256", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "%s  rc-mcp-agent-linux-amd64\n", digest)
+		_, _ = fmt.Fprintf(w, "%s  rc-mcp-agent-linux-amd64\n", digest)
 	})
 	srv := httptest.NewServer(mux)
 	t.Cleanup(srv.Close)
@@ -164,7 +164,7 @@ func TestUpdate_ChecksumMismatch_RefusesToInstall(t *testing.T) {
 func TestUpdate_BinaryFetchFails_NoInstall(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/agent-v1.2.3/rc-mcp-agent-linux-amd64.sha256", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "%s  x\n", strings.Repeat("ab", 32))
+		_, _ = fmt.Fprintf(w, "%s  x\n", strings.Repeat("ab", 32))
 	})
 	mux.HandleFunc("/agent-v1.2.3/rc-mcp-agent-linux-amd64", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)

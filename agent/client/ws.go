@@ -202,7 +202,7 @@ func (c *Connection) heartbeatLoop() {
 			})
 
 			c.mu.Lock()
-			c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+			_ = c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 			err := c.ws.WriteControl(websocket.PingMessage, nil, time.Now().Add(writeWait))
 			c.mu.Unlock()
 			if err != nil {
@@ -233,7 +233,7 @@ func (c *Connection) heartbeatLoop() {
 func (c *Connection) SendEnvelope(env protocol.Envelope) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+	_ = c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 	if err := c.ws.WriteJSON(env); err != nil {
 		c.markDead()
 		return err
@@ -247,7 +247,7 @@ func (c *Connection) SendEnvelope(env protocol.Envelope) error {
 func (c *Connection) SendBinary(data []byte) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.ws.SetWriteDeadline(time.Now().Add(writeWait))
+	_ = c.ws.SetWriteDeadline(time.Now().Add(writeWait))
 	if err := c.ws.WriteMessage(websocket.BinaryMessage, data); err != nil {
 		c.markDead()
 		return err

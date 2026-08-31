@@ -40,7 +40,7 @@ func TestHealthHandler_ZeroAgents(t *testing.T) {
 
 func TestLoadConfig_Defaults(t *testing.T) {
 	for _, k := range []string{"MCP_BIND_ADDR", "ADMIN_BIND_ADDR", "DEVICE_REGISTRY_PATH", "PAIRING_CODE_TTL", "AUTH_TOKEN", "MCP_ALLOWED_ORIGINS", "SSE_REPLAY_BUFFER_SIZE", "MCP_SESSION_IDLE_TIMEOUT", "RC_AUDIT_LOG_PATH", "RC_RATE_LIMIT_SESSION", "RC_RATE_LIMIT_TOOLS", "RC_MAX_CONCURRENT_DISPATCHES", "RC_SHELL_SKIP_CONFIRM", "RC_ELICITATION_TIMEOUT"} {
-		os.Unsetenv(k)
+		_ = os.Unsetenv(k)
 	}
 	cfg := loadConfig()
 	if cfg.mcpBindAddr != "0.0.0.0:8080" {
@@ -111,7 +111,7 @@ func TestRun_HealthEndpointAndGracefulShutdown(t *testing.T) {
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status = %d, want 200", resp.StatusCode)
 	}
-	resp.Body.Close()
+	_ = resp.Body.Close()
 
 	// Trigger graceful shutdown.
 	cancel()
@@ -187,8 +187,8 @@ func TestLoadConfig_AuditFullArgsAndGlobalFSRoots(t *testing.T) {
 }
 
 func TestLoadConfig_AuditFullArgsDefaultsFalse(t *testing.T) {
-	os.Unsetenv("RC_AUDIT_FULL_ARGS")
-	os.Unsetenv("RC_GLOBAL_FS_ALLOWED_ROOTS")
+	_ = os.Unsetenv("RC_AUDIT_FULL_ARGS")
+	_ = os.Unsetenv("RC_GLOBAL_FS_ALLOWED_ROOTS")
 
 	cfg := loadConfig()
 	if cfg.auditFullArgs {
@@ -215,8 +215,8 @@ func TestRun_RefusesToStartWithInvalidGlobalFSRoot(t *testing.T) {
 }
 
 func TestLoadConfig_SessionStoreDefaults(t *testing.T) {
-	os.Unsetenv("MCP_SESSION_STORE")
-	os.Unsetenv("REDIS_ADDR")
+	_ = os.Unsetenv("MCP_SESSION_STORE")
+	_ = os.Unsetenv("REDIS_ADDR")
 
 	cfg := loadConfig()
 	if cfg.sessionStore != sessionStoreMemory {
@@ -305,7 +305,7 @@ func TestRun_DefaultSessionStoreDoesNotRequireRedis(t *testing.T) {
 		cancel()
 		t.Fatalf("server never became healthy: %v", err)
 	}
-	resp.Body.Close()
+	_ = resp.Body.Close()
 
 	cancel()
 	select {
@@ -319,7 +319,7 @@ func TestRun_DefaultSessionStoreDoesNotRequireRedis(t *testing.T) {
 }
 
 func TestLoadConfig_AgentLatestVersion(t *testing.T) {
-	os.Unsetenv("AGENT_LATEST_VERSION")
+	_ = os.Unsetenv("AGENT_LATEST_VERSION")
 	cfg := loadConfig()
 	if cfg.agentLatestVersion != "" {
 		t.Errorf("agentLatestVersion = %q, want empty by default", cfg.agentLatestVersion)
@@ -333,7 +333,7 @@ func TestLoadConfig_AgentLatestVersion(t *testing.T) {
 }
 
 func TestLoadConfig_ReplicaID(t *testing.T) {
-	os.Unsetenv("REPLICA_ID")
+	_ = os.Unsetenv("REPLICA_ID")
 	cfg := loadConfig()
 	if cfg.replicaID == "" {
 		t.Error("replicaID should default to a generated non-empty value")

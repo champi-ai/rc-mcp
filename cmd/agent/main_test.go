@@ -17,7 +17,7 @@ import (
 )
 
 func TestLoadConfig_RequiresServerURL(t *testing.T) {
-	os.Unsetenv("AGENT_SERVER_URL")
+	_ = os.Unsetenv("AGENT_SERVER_URL")
 	if _, err := loadConfig(); err == nil {
 		t.Fatal("expected an error when AGENT_SERVER_URL is unset")
 	}
@@ -25,8 +25,8 @@ func TestLoadConfig_RequiresServerURL(t *testing.T) {
 
 func TestLoadConfig_Defaults(t *testing.T) {
 	t.Setenv("AGENT_SERVER_URL", "wss://example.invalid/agent/ws")
-	os.Unsetenv("AGENT_TOKEN_PATH")
-	os.Unsetenv("AGENT_CAPABILITIES")
+	_ = os.Unsetenv("AGENT_TOKEN_PATH")
+	_ = os.Unsetenv("AGENT_CAPABILITIES")
 
 	cfg, err := loadConfig()
 	if err != nil {
@@ -223,9 +223,9 @@ func TestMaybeAutoUpdate_EmptyLatestVersion_NoOp(t *testing.T) {
 
 func TestLoadConfig_AutoUpdateDefaults(t *testing.T) {
 	t.Setenv("AGENT_SERVER_URL", "wss://example.invalid/agent/ws")
-	os.Unsetenv("AGENT_AUTO_UPDATE")
-	os.Unsetenv("AGENT_UPDATE_BASE_URL")
-	os.Unsetenv("AGENT_SYSTEMD_UNIT")
+	_ = os.Unsetenv("AGENT_AUTO_UPDATE")
+	_ = os.Unsetenv("AGENT_UPDATE_BASE_URL")
+	_ = os.Unsetenv("AGENT_SYSTEMD_UNIT")
 
 	cfg, err := loadConfig()
 	if err != nil {
