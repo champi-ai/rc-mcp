@@ -32,6 +32,15 @@ from the human at the client before dispatch; every call is audited.
   format, and architecture specification — authoritative source for tool
   schemas, message types, and config.
 
+## Installation
+
+- [docs/guides/install-server.md](docs/guides/install-server.md): three
+  ways to run the server — Docker Compose (with nginx/TLS), a published
+  Docker image, or a from-source systemd service.
+- [docs/guides/install-agent.md](docs/guides/install-agent.md): installing
+  the agent on a controlled machine as a systemd user service, config,
+  and pairing it with the server.
+
 ## Operations
 
 - [docs/operations/releases.md](docs/operations/releases.md): how the
