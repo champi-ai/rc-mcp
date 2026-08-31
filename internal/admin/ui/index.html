@@ -5,46 +5,82 @@
 <title>rc-mcp admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  :root { color-scheme: light dark; }
-  body { font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 24px; max-width: 960px; }
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --fg-muted: #595959;
+    --border: #ddd;
+    --border-subtle: #eee;
+    --code-bg: #f2f2f2;
+    --btn-bg: #fafafa;
+    --btn-bg-hover: #eee;
+    --btn-border: #ccc;
+    --danger: #b3261e;
+    --badge-on-bg: #d7f5dd;
+    --badge-on-fg: #146029;
+    --badge-off-bg: #e2e2e2;
+    --badge-off-fg: #4d4d4d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212;
+      --fg: #f0f0f0;
+      --fg-muted: #b3b3b3;
+      --border: #3a3a3a;
+      --border-subtle: #2c2c2c;
+      --code-bg: #262626;
+      --btn-bg: #262626;
+      --btn-bg-hover: #333;
+      --btn-border: #555;
+      --danger: #ff6b60;
+      --badge-on-bg: #143d22;
+      --badge-on-fg: #7ee2a0;
+      --badge-off-bg: #333;
+      --badge-off-fg: #cfcfcf;
+    }
+  }
+  body { font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; padding: 24px; max-width: 960px; background: var(--bg); color: var(--fg); }
   h1 { font-size: 18px; margin: 0 0 4px; }
-  .sub { color: #666; margin: 0 0 24px; }
+  .sub { color: var(--fg-muted); margin: 0 0 24px; }
   section { margin-bottom: 32px; }
-  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: #666; border-bottom: 1px solid #ddd; padding-bottom: 6px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .03em; color: var(--fg-muted); border-bottom: 1px solid var(--border); padding-bottom: 6px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eee; vertical-align: top; }
-  th { color: #666; font-weight: 600; }
-  code { background: #f2f2f2; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
-  button { font: inherit; padding: 4px 10px; border: 1px solid #ccc; border-radius: 4px; background: #fafafa; cursor: pointer; }
-  button:hover { background: #f0f0f0; }
-  button.danger { border-color: #d33; color: #d33; }
-  .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; }
-  .badge.on { background: #d7f5dd; color: #16702c; }
-  .badge.off { background: #eee; color: #777; }
-  .empty { color: #888; font-style: italic; padding: 8px 0; }
-  .err { color: #d33; margin-top: 8px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+  th { color: var(--fg-muted); font-weight: 600; }
+  code { background: var(--code-bg); color: var(--fg); padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+  button { font: inherit; padding: 4px 10px; border: 1px solid var(--btn-border); border-radius: 4px; background: var(--btn-bg); color: var(--fg); cursor: pointer; }
+  button:hover:not(:disabled) { background: var(--btn-bg-hover); }
+  button:focus-visible { outline: 2px solid #4d90fe; outline-offset: 1px; }
+  button:disabled { opacity: .55; cursor: default; }
+  button.danger { border-color: var(--danger); color: var(--danger); }
+  .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .badge.on { background: var(--badge-on-bg); color: var(--badge-on-fg); }
+  .badge.off { background: var(--badge-off-bg); color: var(--badge-off-fg); }
+  .empty { color: var(--fg-muted); font-style: italic; padding: 8px 0; }
+  .err { color: var(--danger); margin-top: 8px; }
   .row-actions { white-space: nowrap; }
   .pager { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-  input[type=text] { font: inherit; padding: 4px 8px; border: 1px solid #ccc; border-radius: 4px; width: 140px; }
+  input[type=text] { font: inherit; padding: 4px 8px; border: 1px solid var(--btn-border); border-radius: 4px; width: 140px; background: var(--bg); color: var(--fg); }
 </style>
 </head>
 <body>
   <h1>rc-mcp admin</h1>
   <p class="sub">Loopback-only. This page and every request it makes stay on <code>127.0.0.1</code>.</p>
 
-  <section id="pending-section">
-    <h2>Pending pairing codes</h2>
-    <div id="pending-list"></div>
+  <section aria-labelledby="pending-heading">
+    <h2 id="pending-heading">Pending pairing codes</h2>
+    <div id="pending-list" aria-live="polite"></div>
   </section>
 
-  <section id="devices-section">
-    <h2>Paired devices</h2>
-    <div id="devices-list"></div>
+  <section aria-labelledby="devices-heading">
+    <h2 id="devices-heading">Paired devices</h2>
+    <div id="devices-list" aria-live="polite"></div>
   </section>
 
-  <section id="audit-section">
-    <h2>Audit log</h2>
-    <div id="audit-list"></div>
+  <section aria-labelledby="audit-heading">
+    <h2 id="audit-heading">Audit log</h2>
+    <div id="audit-list" aria-live="polite"></div>
     <div class="pager">
       <button id="audit-prev">&laquo; newer</button>
       <button id="audit-next">older &raquo;</button>
@@ -78,7 +114,7 @@ function el(tag, attrs, children) {
 }
 
 function showError(container, err) {
-  container.appendChild(el('div', { class: 'err', text: 'Error: ' + err.message }));
+  container.appendChild(el('div', { class: 'err', role: 'alert', text: 'Error: ' + err.message }));
 }
 
 async function loadPending() {
@@ -94,11 +130,11 @@ async function loadPending() {
     const table = el('table', {}, [
       el('tr', {}, [
         el('th', { text: 'Code' }), el('th', { text: 'Hostname' }),
-        el('th', { text: 'Expires' }), el('th', { text: '' }),
+        el('th', { text: 'Expires' }), el('th', { text: 'Actions' }),
       ]),
     ]);
     for (const c of pending) {
-      const approveBtn = el('button', { text: 'Approve' });
+      const approveBtn = el('button', { text: 'Approve', 'aria-label': 'Approve pairing code ' + c.code + ' for ' + c.hostname });
       approveBtn.onclick = async () => {
         approveBtn.disabled = true;
         try {
@@ -106,7 +142,7 @@ async function loadPending() {
           await refreshAll();
         } catch (err) { showError(container, err); approveBtn.disabled = false; }
       };
-      const rejectBtn = el('button', { text: 'Reject', class: 'danger' });
+      const rejectBtn = el('button', { text: 'Reject', class: 'danger', 'aria-label': 'Reject pairing code ' + c.code + ' for ' + c.hostname });
       rejectBtn.onclick = async () => {
         rejectBtn.disabled = true;
         try {
@@ -140,11 +176,11 @@ async function loadDevices() {
     const table = el('table', {}, [
       el('tr', {}, [
         el('th', { text: 'Device' }), el('th', { text: 'Status' }),
-        el('th', { text: 'Capabilities' }), el('th', { text: 'Last seen' }), el('th', { text: '' }),
+        el('th', { text: 'Capabilities' }), el('th', { text: 'Last seen' }), el('th', { text: 'Actions' }),
       ]),
     ]);
     for (const d of devs) {
-      const revokeBtn = el('button', { text: 'Revoke', class: 'danger' });
+      const revokeBtn = el('button', { text: 'Revoke', class: 'danger', 'aria-label': 'Revoke device ' + (d.label || d.clientId) });
       revokeBtn.onclick = async () => {
         if (!confirm('Revoke device ' + d.label + ' (' + d.clientId + ')? This cannot be undone.')) return;
         revokeBtn.disabled = true;
