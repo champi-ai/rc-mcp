@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 # Cancel superseded runs on the same ref to avoid burning CI minutes on
 # stale pushes.
 concurrency:
